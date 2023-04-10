@@ -1,6 +1,6 @@
-//initialize dependencies and import functions
+
 const express = require("express")
-//initialize the app
+
 const app = express();
 const mongoose= require ('mongoose')
 const colors= require ('colors')
@@ -8,28 +8,25 @@ const bodyParser = require("body-parser");
 
 require("dotenv").config({path:'./config/.env'}) 
 
-//parsing data: JSON 
+
 app.use(express.json())
 
-//require user model
+
 const User= require('./models/User')
 
-// parse application/x-www-form-urlencoded
+
 app.use(bodyParser.urlencoded({ extended: false }))
-// parse application/json
+
 app.use(bodyParser.json())
 
-//connection to database
+
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>console.log(`db connected` .cyan))
 .catch(err => console.log(`err` .red))
 
-//create the port
+
 const PORT= process.env.PORT || 4400;
 
-//routes
-
-//adding new user: post () to access the req body
 app.post ("/newuser", async (req,res)=> {
     const newUser= (req.body);
     try {
@@ -41,7 +38,7 @@ app.post ("/newuser", async (req,res)=> {
 }
 })
 
-//look for an existing user + update
+
 app.put("/update/:id", async (req,res,next)=>{
     try{
         const updateUser = await User.findOneAndUpdate(
@@ -58,7 +55,7 @@ app.put("/update/:id", async (req,res,next)=>{
     }
 });
 
-//get all users: get()
+
 app.get("/allusers", async (req,res,next)=>{
     try{
         const users = await  User.find({});
@@ -68,7 +65,7 @@ app.get("/allusers", async (req,res,next)=>{
     }
 });
 
-//delete a user: delete()
+
 app.delete("/user/delete/:id", async (req,res, next) => {
     try {
         await User.findOneAndDelete({_id:req.params.id})
@@ -79,6 +76,6 @@ app.delete("/user/delete/:id", async (req,res, next) => {
     }
 })
 
-//running our server
+
 app.listen (PORT, (err)=>
 err ? console.log(err) : console.log (`server is running on ${PORT} `));
